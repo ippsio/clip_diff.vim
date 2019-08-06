@@ -16,10 +16,8 @@ function! DoDiffPartially() range
   se buftype=nowrite
   diffthis
 
-  " clipboard register to unnamed register
   lefta vnew
-  let @@ = *
-  normal P
+  normal "*P
   se buftype=nowrite
   diffthis
 
