@@ -1,23 +1,27 @@
 if exists('g:loaded_partial_diff')
   finish
 endif
+
 let g:loaded_partial_diff = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
 
-command! -range PartialDiff :<line1>,<line2>call DoDiffPartially()
+command! -range PartialDiff :<line1>,<line2>call PartialDiff()
 
-function! DoDiffPartially() range
+function! PartialDiff() range
   let s:unnamed_register = @@
   exe a:firstline . "," . a:lastline . "y"
+
   tabnew
+  let @@ = "SELECTED <<<<<\n\n" . @@
   normal P
   se buftype=nowrite
   diffthis
 
-  lefta vnew
-  normal "*P
+  rightb vnew
+  let @@ = ">>>>> CLIPBOARD\n\n" . @+
+  normal P
   se buftype=nowrite
   diffthis
 
