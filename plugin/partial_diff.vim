@@ -11,13 +11,16 @@ command! -range CliplDiff :<line1>,<line2>call ClipDiff()
 function! ClipDiff() range
   let s:unnamed_register = @@
   exe a:firstline . "," . a:lastline . "y"
+
   tabnew
+  let @@ = "SELECTED <<<<<\n\n" . @@
   normal P
   se buftype=nowrite
   diffthis
 
-  lefta vnew
-  normal "*P
+  rightb vnew
+  let @@ = ">>>>> CLIPBOARD\n\n" . @+
+  normal P
   se buftype=nowrite
   diffthis
 
