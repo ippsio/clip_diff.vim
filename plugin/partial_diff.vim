@@ -1,14 +1,14 @@
-if exists('g:loaded_partial_diff')
+if exists('g:loaded_clip_diff')
   finish
 endif
-let g:loaded_partial_diff = 1
+let g:loaded_clip_diff = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
 
-command! -range PartialDiff :<line1>,<line2>call DoDiffPartially()
+command! -range CliplDiff :<line1>,<line2>call ClipDiff()
 
-function! DoDiffPartially() range
+function! ClipDiff() range
   let s:unnamed_register = @@
   exe a:firstline . "," . a:lastline . "y"
   tabnew
