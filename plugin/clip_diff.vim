@@ -9,24 +9,30 @@ set cpo&vim
 command! -range CliplDiff :<line1>,<line2>call ClipDiff()
 
 function! ClipDiff() range
-  let s:unnamed_register = @@
   exe a:firstline . "," . a:lastline . "y"
 
-  tabnew
-  let @@ = "SELECTED <<<<<\n\n" . @@
+  tabnew _SELECTED_
   normal P
   se buftype=nowrite
+  set filetype=clip_diff
   diffthis
 
-  rightb vnew
-  let @@ = ">>>>> CLIPBOARD\n\n" . @+
-  normal P
+  rightb vnew _CLIPBORD_
+  normal "+P
   se buftype=nowrite
+  set filetype=clip_diff
   diffthis
-
-  let @@ = s:unnamed_register
 endfun
+
+function! s:CloseTabIfLastClipDiffWindow()
+  " タブ内のバッファを全て閉じる
+  for b in tabpagebuflist(tabpagenr())
+    if bufexists(b) && getbufvar(b, '&filetype') ==# 'clip_diff'
+      execute 'bdelete!' b
+    endif
+  endfor
+endfunction
+autocmd WinClosed * if &filetype ==# 'clip_diff' | call <SID>CloseTabIfLastClipDiffWindow() | endif
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
-
